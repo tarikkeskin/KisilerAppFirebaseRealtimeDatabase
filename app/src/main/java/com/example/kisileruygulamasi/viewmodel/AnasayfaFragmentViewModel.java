@@ -23,7 +23,7 @@ public class AnasayfaFragmentViewModel extends ViewModel {
         krepo.kisiAra(aramaKelimesi);
     }
 
-    public void sil(int kisi_id){
+    public void sil(String kisi_id){
         krepo.kisiSil(kisi_id);
     }
 

@@ -5,12 +5,14 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.kisileruygulamasi.entity.Kisiler;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class KisilerDaoRepository {
     private MutableLiveData<List<Kisiler>> kisilerListesi;
+
 
     public KisilerDaoRepository() {
         kisilerListesi = new MutableLiveData();
@@ -24,7 +26,7 @@ public class KisilerDaoRepository {
         Log.e("Kişi Kayıt",kisi_ad+" - "+kisi_tel);
     }
 
-    public void kisiGuncelle(int kisi_id,String kisi_ad,String kisi_tel){
+    public void kisiGuncelle(String kisi_id,String kisi_ad,String kisi_tel){
         Log.e("Kişi Güncelle",kisi_id+" - "+kisi_ad+" - "+kisi_tel);
     }
 
@@ -32,15 +34,15 @@ public class KisilerDaoRepository {
         Log.e("Kişi Ara",aramaKelimesi);
     }
 
-    public void kisiSil(int kisi_id){
+    public void kisiSil(String kisi_id){
         Log.e("Kişi Sil",String.valueOf(kisi_id));
     }
 
     public void tumKisileriAl(){
         ArrayList<Kisiler> liste = new ArrayList<>();
-        Kisiler k1 = new Kisiler(1,"Ahmet","11111");
-        Kisiler k2 = new Kisiler(2,"Zeynep","22222");
-        Kisiler k3 = new Kisiler(3,"Beyza","33333");
+        Kisiler k1 = new Kisiler("1","Ahmet","11111");
+        Kisiler k2 = new Kisiler("2","Zeynep","22222");
+        Kisiler k3 = new Kisiler("3","Beyza","33333");
         liste.add(k1);
         liste.add(k2);
         liste.add(k3);

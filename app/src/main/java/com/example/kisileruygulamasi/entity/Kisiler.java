@@ -3,24 +3,24 @@ package com.example.kisileruygulamasi.entity;
 import java.io.Serializable;
 
 public class Kisiler implements Serializable {
-    private int kisi_id;
+    private String kisi_id;
     private String kisi_ad;
     private String kisi_tel;
 
     public Kisiler() {
     }
 
-    public Kisiler(int kisi_id, String kisi_ad, String kisi_tel) {
+    public Kisiler(String kisi_id, String kisi_ad, String kisi_tel) {
         this.kisi_id = kisi_id;
         this.kisi_ad = kisi_ad;
         this.kisi_tel = kisi_tel;
     }
 
-    public int getKisi_id() {
+    public String getKisi_id() {
         return kisi_id;
     }
 
-    public void setKisi_id(int kisi_id) {
+    public void setKisi_id(String kisi_id) {
         this.kisi_id = kisi_id;
     }
 
