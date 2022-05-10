@@ -2,20 +2,30 @@ package com.example.kisileruygulamasi.repo;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.kisileruygulamasi.entity.Kisiler;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class KisilerDaoRepository {
     private MutableLiveData<List<Kisiler>> kisilerListesi;
-
+    private DatabaseReference refKisiler;
 
     public KisilerDaoRepository() {
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        refKisiler = db.getReference("kisiler");
         kisilerListesi = new MutableLiveData();
+
     }
 
     public MutableLiveData<List<Kisiler>> kisileriGetir(){
@@ -23,29 +33,68 @@ public class KisilerDaoRepository {
     }
 
     public void kisiKayit(String kisi_ad, String kisi_tel){
-        Log.e("Kişi Kayıt",kisi_ad+" - "+kisi_tel);
+        Kisiler yeniKisi = new Kisiler("",kisi_ad,kisi_tel);
+        refKisiler.push().setValue(yeniKisi);
     }
 
     public void kisiGuncelle(String kisi_id,String kisi_ad,String kisi_tel){
-        Log.e("Kişi Güncelle",kisi_id+" - "+kisi_ad+" - "+kisi_tel);
+        HashMap<String,Object> bilgiler = new HashMap<>();
+        bilgiler.put("kisi_ad",kisi_ad);
+        bilgiler.put("kisi_tel",kisi_tel);
+        refKisiler.child(kisi_id).updateChildren(bilgiler);
     }
 
     public void kisiAra(String aramaKelimesi){
-        Log.e("Kişi Ara",aramaKelimesi);
+        refKisiler.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<Kisiler> liste = new ArrayList<>();
+
+                for (DataSnapshot d:snapshot.getChildren()) {
+                    Kisiler kisi = d.getValue(Kisiler.class);
+                    if (kisi != null) {
+                        if (kisi.getKisi_ad().toLowerCase().contains(aramaKelimesi.toLowerCase())) {
+                            kisi.setKisi_id(d.getKey());
+                            liste.add(kisi);
+                        }
+                    }
+                }
+
+                kisilerListesi.setValue(liste);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     public void kisiSil(String kisi_id){
-        Log.e("Kişi Sil",String.valueOf(kisi_id));
+        refKisiler.child(kisi_id).removeValue();
     }
 
     public void tumKisileriAl(){
-        ArrayList<Kisiler> liste = new ArrayList<>();
-        Kisiler k1 = new Kisiler("1","Ahmet","11111");
-        Kisiler k2 = new Kisiler("2","Zeynep","22222");
-        Kisiler k3 = new Kisiler("3","Beyza","33333");
-        liste.add(k1);
-        liste.add(k2);
-        liste.add(k3);
-        kisilerListesi.setValue(liste);
+        refKisiler.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<Kisiler> liste = new ArrayList<>();
+
+                for (DataSnapshot d:snapshot.getChildren()){
+                    Kisiler kisi = d.getValue(Kisiler.class);
+                    if(kisi != null){
+                        kisi.setKisi_id(d.getKey());
+                        liste.add(kisi);
+                    }
+                }
+
+                kisilerListesi.setValue(liste);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }
